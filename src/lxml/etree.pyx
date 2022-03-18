@@ -3096,7 +3096,7 @@ PI = ProcessingInstruction
 
 
 cdef class CDATA:
-    u"""CDATA(data)
+    u"""CDATA(data, allow_nested_cdata=False)
 
     CDATA factory.  This factory creates an opaque data object that
     can be used to set Element text.  The usual way to use it is::
@@ -3110,9 +3110,9 @@ cdef class CDATA:
         <content><![CDATA[a string]]></content>
     """
     cdef bytes _utf8_data
-    def __cinit__(self, data):
+    def __cinit__(self, data, allow_nested_cdata=False):
         _utf8_data = _utf8(data)
-        if b']]>' in _utf8_data:
+        if not allow_nested_cdata and b']]>' in _utf8_data:
             raise ValueError, "']]>' not allowed inside CDATA"
         self._utf8_data = _utf8_data
 
